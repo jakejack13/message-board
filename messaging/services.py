@@ -43,10 +43,11 @@ class _UserService:
 class _MessageService:
     """A service that operates on messages"""
     
-    def get_all_messages(self) -> list[Message]:
+    def get_all_messages(self, limit: int) -> list[Message]:
         """Returns a list of all of the messages in the system, ordered
-        by creation time"""
-        return list(Message.objects.all())
+        by creation time. Returns only the most recent `limit` number of 
+        messages."""
+        return list(Message.objects.all())[:limit]
     
     def get_user_messages(self, user: User) -> list[Message]:
         """Returns a list of messages sent by the given user, ordered

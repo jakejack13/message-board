@@ -1,16 +1,14 @@
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 from typing import Any, Optional
 
 from .services import USER_SERVICE, MESSAGE_SERVICE
 from .models import User
 
+# Views
 
-def ping(_: HttpRequest) -> HttpResponse:
-    """GET /messaging
-    Pings the server"""
-    return HttpResponse("pong")
-
+@csrf_exempt
 def create_user(request: HttpRequest) -> HttpResponse:
     """POST /messaging/user
     Creates a new user of the program
@@ -27,6 +25,8 @@ def create_user(request: HttpRequest) -> HttpResponse:
     {
         "id": int
     }"""
+    if request.method != "POST":
+        return HttpResponse(status=405)
     body: dict[str, str] = _get_json_data(request)
     # If we are missing username or password, return 400
     if 'username' not in body or 'password' not in body:
@@ -41,6 +41,7 @@ def create_user(request: HttpRequest) -> HttpResponse:
     USER_SERVICE.create_user(username, password) # If user does not exist, create new user
     return HttpResponse(status=201)
 
+@csrf_exempt
 def get_all_messages(request: HttpRequest) -> HttpResponse:
     """GET /messaging/message
     Returns all of the messages in the system
@@ -55,9 +56,16 @@ def get_all_messages(request: HttpRequest) -> HttpResponse:
             }
         ]
     }"""
-    messages = MESSAGE_SERVICE.get_all_messages() # Get all messages
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    try:
+        limit = int(request.GET.get('limit', 100)) # Grab `limit` query param
+    except ValueError:
+        return JsonResponse({"error": "Invalid `limit` param"}, status=400)
+    messages = MESSAGE_SERVICE.get_all_messages(limit) # Get all messages
     return JsonResponse({"messages": [message.json() for message in messages]}) # Convert messages to JSON
 
+@csrf_exempt
 def get_my_messages(request: HttpRequest) -> HttpResponse:
     """GET /messaging/message/me
     Returns all of the messages that you have sent
@@ -72,6 +80,8 @@ def get_my_messages(request: HttpRequest) -> HttpResponse:
             }
         ]
     }"""
+    if request.method != "GET":
+        return HttpResponse(status=405)
     auth_error = _check_auth_headers(request)
     if auth_error: # If there is an error with authentication, return it immediately
         return auth_error
@@ -79,9 +89,9 @@ def get_my_messages(request: HttpRequest) -> HttpResponse:
     messages = MESSAGE_SERVICE.get_user_messages(user) # Get messages from user
     return JsonResponse({"messages": [message.json() for message in messages]}) # Convert messages to JSON
  
-
+@csrf_exempt
 def create_message(request: HttpRequest) -> HttpResponse:
-    """POST /messaging/message
+    """POST /messaging/message/create
     Creates a new message
     
     Request
@@ -89,6 +99,8 @@ def create_message(request: HttpRequest) -> HttpResponse:
     {
         "message": str
     }"""
+    if request.method != "POST":
+        return HttpResponse(status=405)
     auth_error = _check_auth_headers(request)
     if auth_error: # If there is an error with authentication, return it immediately
         return auth_error
@@ -101,6 +113,9 @@ def create_message(request: HttpRequest) -> HttpResponse:
     MESSAGE_SERVICE.create_message(user, message)
     return HttpResponse(status=201)
 
+
+# Helpers
+
 def _get_json_data(request: HttpRequest) -> Any:
     """Deserializes the request body from JSON format"""
     return json.loads(request.body.decode('utf-8'))
@@ -109,8 +124,8 @@ def _check_auth_headers(request: HttpRequest) -> Optional[HttpResponse]:
     """Checks if there exists a user with the given `Username` and `Password`
     headers. If there is not, then return an `HttpResponse` containing an
     error message and `401 Unauthorized` code"""
-    username = request.META.get('HTTP_Username')
-    password = request.META.get('HTTP_Password')
+    username = request.META.get('HTTP_USERNAME')
+    password = request.META.get('HTTP_PASSWORD')
     if not username or not password:
         return JsonResponse({"error": "Missing username or password header"}, status=401)
     if not USER_SERVICE.check_user_login(username, password):
@@ -120,7 +135,7 @@ def _check_auth_headers(request: HttpRequest) -> Optional[HttpResponse]:
 def _get_user_from_auth(request: HttpRequest) -> User:
     """Returns the `User` object representing the user as defined in the 
     headers of the request"""
-    username = request.META.get('HTTP_Username')
+    username = request.META.get('HTTP_USERNAME')
     if not username:
         raise ValueError()
     return USER_SERVICE.get_user(username)

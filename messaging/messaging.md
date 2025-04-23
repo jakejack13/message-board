@@ -11,8 +11,8 @@ all messages endpoint, requires the user to supply their username and password i
 
 ```json
 {
-    "Username": <your username>,
-    "Password": <your password>
+    "USERNAME": <your username>,
+    "PASSWORD": <your password>
 }
 ```
 
@@ -48,11 +48,14 @@ password is supplied for a username that already exists.
 
 ### Get all messages
 
-`GET /messaging/message`
+`GET /messaging/message?limit={limit}`
 
 This endpoint returns all of the messages on the message board. A message
-consists of the username of the user that posted the message along with the message itself. The messages will be sent in the order that they were
-created, with the most recent being the last in the list.
+consists of the username of the user that posted the message along with
+the message itself. The messages will be sent in the order that they were
+created, with the most recent being the last in the list. If the `limit`
+query param is supplied, only the last `limit` number of messages are
+returned. If `limit` is not supplied, a default of 100 messages is used.
 
 #### Response
 
@@ -105,7 +108,7 @@ list.
 
 ### Create a new message
 
-`POST /messaging/message`
+`POST /messaging/message/create`
 
 Creates a new message from the logged in user on the message board.
 
