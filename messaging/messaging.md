@@ -48,7 +48,7 @@ password is supplied for a username that already exists.
 
 ### Get all messages
 
-`GET /messaging/message?limit={limit}`
+`GET /messaging/message?limit={limit:int}`
 
 This endpoint returns all of the messages on the message board. A message
 consists of the username of the user that posted the message along with

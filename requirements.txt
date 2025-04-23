@@ -1,4 +1,5 @@
 Django
+markdown
 black
 pylint
 mypy

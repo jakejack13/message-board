@@ -4,6 +4,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path("", views.get_docs, name="docs"),
     path("user", views.create_user, name="user"),
     path("message", views.get_all_messages, name="message"),
     path("message/me", views.get_my_messages, name="me"),

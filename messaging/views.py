@@ -3,12 +3,36 @@ to a view, which is a single endpoint of the app"""
 import json
 from typing import Any, Optional
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
+import markdown
 
 from .services import USER_SERVICE, MESSAGE_SERVICE
 from .models import User
 
+
+def _get_docs_content() -> str:
+    """Returns the docs markdown page as a single string"""
+    with open("messaging/messaging.md", "r", encoding="utf-8") as f:
+        content = f.read()
+        return content.replace(
+            "json", ""
+        )  # `markdown` does not remove language indicators from code blocks
+
+
+DOCS_CONTENT = _get_docs_content()
+
 # Views
+
+
+@csrf_exempt
+def get_docs(request: HttpRequest) -> HttpResponse:
+    """GET /messaging
+    Returns the documentation for the API"""
+    template = loader.get_template("messaging/docs.html")
+    html = markdown.markdown(DOCS_CONTENT)
+    context = {"html": html}
+    return HttpResponse(template.render(context, request))
 
 
 @csrf_exempt
