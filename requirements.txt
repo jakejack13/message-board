@@ -1,1 +1,4 @@
 Django
+black
+pylint
+mypy

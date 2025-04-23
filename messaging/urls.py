@@ -1,3 +1,4 @@
+"""Module for registering endpoints to their corresponding views"""
 from django.urls import path
 
 from . import views
