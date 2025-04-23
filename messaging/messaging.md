@@ -5,8 +5,8 @@ the message board and get all messages from the message board.
 
 ## Authorization
 
-All requests to the API, besides the user creation endpoint, requires the
-user to supply their username and password in the `Username`  and
+All requests to the API, besides the user creation endpoint and the get
+all messages endpoint, requires the user to supply their username and password in the `Username`  and
 `Password` headers:
 
 ```json
@@ -42,7 +42,7 @@ password is supplied for a username that already exists.
 
 #### Response
 
-- `200 Ok`: Success
+- `201 Created`: Success
 - `400 Bad Request`: Username or password not supplied
 - `409 Conflict`: Username has already been taken
 
@@ -72,7 +72,6 @@ created, with the most recent being the last in the list.
 ```
 
 - `200 Ok`: Success
-- `401 Unauthorized`: Authentication failed
 
 ### Get my messages
 
@@ -120,6 +119,6 @@ Creates a new message from the logged in user on the message board.
 
 #### Response
 
-- `200 Ok`: Success
+- `201 Created`: Success
 - `400 Bad Request`: Message is not supplied
 - `401 Unauthorized`: Authentication failed
