@@ -3,3 +3,4 @@ markdown
 black
 pylint
 mypy
+python-dotenv

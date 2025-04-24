@@ -8,9 +8,10 @@ class User(models.Model):
 
     username = models.CharField(max_length=100, unique=True)
     """The username of the user"""
-    hashed_password = models.IntegerField()
+    hashed_password = models.CharField(max_length=100)
     """The hashed and salted password of the user"""
-    password_salt = models.CharField(max_length=20)
+    password_salt = models.UUIDField()
+    """The salt of the password"""
 
 
 class Message(models.Model):

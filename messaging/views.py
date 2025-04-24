@@ -1,6 +1,7 @@
 """The views of the application. Each function corresponds
 to a view, which is a single endpoint of the app"""
 import json
+import os
 from typing import Any, Optional
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.template import loader
@@ -150,6 +151,21 @@ def create_message(request: HttpRequest) -> HttpResponse:
     MESSAGE_SERVICE.create_message(user, message)
     return HttpResponse(status=201)
 
+@csrf_exempt
+def delete_messages(request: HttpRequest) -> HttpResponse:
+    """DELETE /messaging/message/nuke
+    Deletes all messages in the system"""
+    if request.method != "DELETE":
+        return HttpResponse(status=405)
+    auth_error = _check_auth_headers(request)
+    if auth_error:  # If there is an error with authentication, return it immediately
+        return auth_error
+    user = _get_user_from_auth(request)  # Query user from auth headers
+    correct_username = os.environ['SUPERUSER']
+    if user.username != correct_username:
+        return HttpResponse(status=403)
+    MESSAGE_SERVICE.remove_all_messages()
+    return HttpResponse(status=200)
 
 # Helpers
 
