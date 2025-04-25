@@ -1,5 +1,6 @@
 """Model classes that represent the object model of the
 message board"""
+
 from django.db import models
 
 
@@ -18,6 +19,8 @@ class Message(models.Model):
     """A model that represents a message in the message board
     application"""
 
+    id: int
+    """The unique id of the message"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     """The user that created this message"""
     message = models.CharField(max_length=500)
@@ -25,4 +28,4 @@ class Message(models.Model):
 
     def json(self) -> dict[str, str]:
         """Returns the JSON representation of this message"""
-        return {"username": self.user.username, "message": self.message}
+        return {"id": self.id, "username": self.user.username, "message": self.message}

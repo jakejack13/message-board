@@ -1,4 +1,5 @@
 """Module for Django application configuration classes"""
+
 from django.apps import AppConfig
 
 

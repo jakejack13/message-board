@@ -1,6 +1,6 @@
 # Messaging
 
-The messaging board API. This API allows users to post new messages to
+The message board API. This API allows users to post new messages to
 the message board and get all messages from the message board.
 
 ## Authorization
@@ -52,10 +52,11 @@ password is supplied for a username that already exists.
 
 This endpoint returns all of the messages on the message board. A message
 consists of the username of the user that posted the message along with
-the message itself. The messages will be sent in the order that they were
-created, with the most recent being the last in the list. If the `limit`
-query param is supplied, only the last `limit` number of messages are
-returned. If `limit` is not supplied, a default of 100 messages is used.
+the message itself and its unique id. The messages will be sent in the
+order that they were created, with the most recent being the last in
+the list. If the `limit` query param is supplied, only the last `limit`
+number of messages are returned. If `limit` is not supplied, a default
+of 100 messages is used.
 
 #### Response
 
@@ -63,10 +64,12 @@ returned. If `limit` is not supplied, a default of 100 messages is used.
 {
     "messages": [
         {
+            "id": int,
             "username": string,
             "message": string
         },
         {
+            "id": int,
             "username": string,
             "message": string
         }
@@ -82,9 +85,9 @@ returned. If `limit` is not supplied, a default of 100 messages is used.
 
 This endpoint returns all of the messages sent by you on the message
 board. A message consists of the username of the user that posted the
-message along with the message itself. The messages will be sent in the
-order that they were created, with the most recent being the last in the
-list.
+message along with the message itself and its unique id. The messages
+will be sent in the order that they were created, with the most recent
+being the last in the list.
 
 #### Response
 
@@ -92,10 +95,42 @@ list.
 {
     "messages": [
         {
+            "id": int,
             "username": string,
             "message": string
         },
         {
+            "id": int,
+            "username": string,
+            "message": string
+        }
+    ]
+}
+```
+
+### Get messages I am tagged in
+
+`GET /messaging/message/tagged`
+
+This endpoint returns all of the messages that has your username tagged
+in it. A tag consists of the `@` symbol followed by your username, ex.
+`@Jacob`. A message consists of the username of the user that posted the
+message along with the message itself and its unique id. The messages will
+be sent in the order that they were created, with the most recent being the
+last in the list.
+
+#### Response
+
+```json
+{
+    "messages": [
+        {
+            "id": int,
+            "username": string,
+            "message": string
+        },
+        {
+            "id": int,
             "username": string,
             "message": string
         }

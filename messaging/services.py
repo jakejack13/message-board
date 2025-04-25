@@ -60,6 +60,12 @@ class _MessageService:
         by creation time"""
         return list(Message.objects.filter(user=user))
 
+    def get_tagged_messages(self, user: User) -> list[Message]:
+        """Returns a list of messages that tagged the given user's username,
+        ordered by creation time"""
+        tagged_string = f"@{user.username}"
+        return list(Message.objects.filter(message__icontains=tagged_string))
+
     def create_message(self, user: User, message: str) -> None:
         """Creates a new message on the message board from the given user"""
         Message.objects.create(user=user, message=message)
