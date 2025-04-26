@@ -59,7 +59,7 @@ class _MessageService:
             objects = Message.objects.filter(id__gt=since)
         else:
             objects = Message.objects.all()
-        return list(objects)[:limit]
+        return list(objects)[-limit:]
 
     def get_user_messages(self, user: User) -> list[Message]:
         """Returns a list of messages sent by the given user, ordered
