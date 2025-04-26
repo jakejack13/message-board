@@ -48,7 +48,7 @@ password is supplied for a username that already exists.
 
 ### Get all messages
 
-`GET /messaging/message?limit={limit:int}`
+`GET /messaging/message?limit={limit:int}&since={since:int}`
 
 This endpoint returns all of the messages on the message board. A message
 consists of the username of the user that posted the message along with
@@ -56,7 +56,10 @@ the message itself and its unique id. The messages will be sent in the
 order that they were created, with the most recent being the last in
 the list. If the `limit` query param is supplied, only the last `limit`
 number of messages are returned. If `limit` is not supplied, a default
-of 100 messages is used.
+of 100 messages is used. If the `since` query param is supplied, only
+messages with a message id greater than `since` will be returned. This
+is useful for if you would only like to request messages you have not
+already seen.
 
 #### Response
 

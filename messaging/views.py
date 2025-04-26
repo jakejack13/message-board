@@ -70,7 +70,7 @@ def create_user(request: HttpRequest) -> HttpResponse:
 
 @csrf_exempt
 def get_all_messages(request: HttpRequest) -> HttpResponse:
-    """GET /messaging/message
+    """GET /messaging/message?limit={limit}&since={since}
     Returns all of the messages in the system
 
     Response
@@ -90,7 +90,13 @@ def get_all_messages(request: HttpRequest) -> HttpResponse:
         limit = int(request.GET.get("limit", 100))  # Grab `limit` query param
     except ValueError:
         return JsonResponse({"error": "Invalid `limit` param"}, status=400)
-    messages = MESSAGE_SERVICE.get_all_messages(limit)  # Get all messages
+    try:
+        since = request.GET.get("since")  # Grab `since` query param
+        if since:
+            since = int(since)
+    except ValueError:
+        return JsonResponse({"error": "Invalid `since` param"}, status=400)
+    messages = MESSAGE_SERVICE.get_all_messages(limit, since)  # Get all messages
     return JsonResponse(
         {
             "messages": [message.json() for message in messages]

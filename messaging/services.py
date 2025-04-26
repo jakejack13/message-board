@@ -1,6 +1,7 @@
 """Service classes used to interact with model objects"""
 
 import hashlib
+from typing import Optional
 import uuid
 
 from .models import User, Message
@@ -49,11 +50,16 @@ class _UserService:
 class _MessageService:
     """A service that operates on messages"""
 
-    def get_all_messages(self, limit: int) -> list[Message]:
+    def get_all_messages(self, limit: int, since: Optional[int]) -> list[Message]:
         """Returns a list of all of the messages in the system, ordered
         by creation time. Returns only the most recent `limit` number of
-        messages."""
-        return list(Message.objects.all())[:limit]
+        messages. If `since` is passed in, only returns messages with `id`
+        larger than `since`"""
+        if since:
+            objects = Message.objects.filter(id__gt=since)
+        else:
+            objects = Message.objects.all()
+        return list(objects)[:limit]
 
     def get_user_messages(self, user: User) -> list[Message]:
         """Returns a list of messages sent by the given user, ordered
