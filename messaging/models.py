@@ -28,4 +28,8 @@ class Message(models.Model):
 
     def json(self) -> dict[str, str]:
         """Returns the JSON representation of this message"""
-        return {"id": self.id, "username": self.user.username, "message": self.message}
+        return {
+            "id": str(self.id),
+            "username": self.user.username,
+            "message": self.message,
+        }
