@@ -6,3 +6,5 @@ mypy
 python-dotenv
 requests
 django-stubs
+types-requests
+types-Markdown
