@@ -1,7 +1,20 @@
 """Model classes that represent the object model of the
 message board"""
 
+from typing import TypedDict
+
 from django.db import models
+
+
+class MessageJSON(TypedDict):
+    """A JSON representation of a message"""
+
+    id: int
+    """The unique id of the message"""
+    username: str
+    """The username of the user that created this message"""
+    message: str
+    """The text of the message"""
 
 
 class User(models.Model):
@@ -26,6 +39,10 @@ class Message(models.Model):
     message = models.CharField(max_length=500)
     """The text of the message"""
 
-    def json(self) -> dict[str, str]:
+    def json(self) -> MessageJSON:
         """Returns the JSON representation of this message"""
-        return {"id": self.id, "username": self.user.username, "message": self.message}
+        return {
+            "id": self.id,
+            "username": self.user.username,
+            "message": self.message,
+        }

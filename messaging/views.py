@@ -90,10 +90,11 @@ def get_all_messages(request: HttpRequest) -> HttpResponse:
         limit = int(request.GET.get("limit", 100))  # Grab `limit` query param
     except ValueError:
         return JsonResponse({"error": "Invalid `limit` param"}, status=400)
+    since: Optional[int] = None
     try:
-        since = request.GET.get("since")  # Grab `since` query param
-        if since:
-            since = int(since)
+        since_str = request.GET.get("since")  # Grab `since` query param
+        if since_str:
+            since = int(since_str)
     except ValueError:
         return JsonResponse({"error": "Invalid `since` param"}, status=400)
     messages = MESSAGE_SERVICE.get_all_messages(limit, since)  # Get all messages
