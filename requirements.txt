@@ -5,3 +5,4 @@ pylint
 mypy
 python-dotenv
 requests
+mypy_django_plugin

@@ -1,21 +1,25 @@
 name: Type Check
 
-on: [push, pull_request]
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  type-check:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'
+        python-version: "3.12"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Analysing the code with mypy
+    - name: Run type check
       run: |
         mypy --strict .
